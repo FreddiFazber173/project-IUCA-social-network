@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from .forms import StudentRegisterForm
+from django.contrib import messages
+from .forms import StudentRegisterForm, ProfileUpdateForm
 
 
 def register_view(request):
@@ -13,7 +14,10 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, "Регистрация прошла успешно! Добро пожаловать.")
             return redirect("profile")
+        else:
+            messages.error(request, "Ошибка при регистрации. Проверьте введенные данные.")
     else:
         form = StudentRegisterForm()
 
@@ -22,4 +26,15 @@ def register_view(request):
 
 @login_required
 def profile_view(request):
-    return render(request, "users/profile.html", {"user": request.user})
+    if request.method == "POST":
+        form = ProfileUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Профиль успешно обновлен!")
+            return redirect("profile")
+        else:
+            messages.error(request, "Не удалось обновить профиль. Проверьте данные.")
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+
+    return render(request, "users/profile.html", {"profile_form": form})

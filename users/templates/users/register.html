@@ -1,7 +1,22 @@
 <h2>Регистрация в IUCA Community</h2>
+
+{% if form.errors %}
+    <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6;">
+        <strong>Пожалуйста, исправьте следующие ошибки:</strong>
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Зарегистрироваться</button>
 </form>
+
 <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
