@@ -1,0 +1,11 @@
+<h2>Профиль пользователя</h2>
+<p><strong>Юзернейм:</strong> {{ user.username }}</p>
+<p><strong>Email:</strong> {{ user.email }}</p>
+<p><strong>ФИО:</strong> {{ user.full_name }}</p>
+<p><strong>ВУЗ:</strong> {{ user.university.name }}</p>
+<p><strong>Факультет:</strong> {{ user.faculty.name|default:"Не указан" }}</p>
+
+<form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Выйти из аккаунта</button>
+</form>
